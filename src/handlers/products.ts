@@ -2,18 +2,71 @@ import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import Product from "../models/Product.model";
 
+
+export const getProduct = async(_:Request, res:Response)=>{
+    const products = await Product.findAll({
+        order : [
+            ['price', 'DESC']
+        ],
+        attributes :{exclude : ['createdAt', 'updatedAt', 'availability']}
+    });
+    return res.json({data : products});
+};
+
+export const getProductById = async(req:Request, res:Response)=>{
+    const {id} =  req.params;
+
+    const product = await Product.findByPk(id);
+
+    if(!product) return res.status(404).json({error: 'Produto no encontrado'});
+
+    return res.json({data : product});
+};
+
 export const createProduct = async(req:Request, res:Response)=>{
-
-    // Validacion 
-    
-
-
-    let errores =  validationResult(req);
-
-    if(!errores.isEmpty()) return res.status(400).json({errores : errores.array()});
-
     const product = await Product.create(req.body);
 
     return res.json({data :product});
 
 };  
+
+export const updateProduct = async (req:Request, res:Response)=>{
+    const {id} =  req.params;
+
+    const product = await Product.findByPk(id);
+
+    if(!product) return res.status(404).json({error: 'Produto no encontrado'});
+
+
+    //Update 
+    await product.update(req.body);
+
+    await product.save();
+
+    return res.json({data : product});
+};
+
+export const updateAvailability =  async(req:Request, res:Response)=>{
+    const {id} =  req.params;
+
+    const product = await Product.findByPk(id);
+
+    if(!product) return res.status(404).json({error: 'Produto no encontrado'});
+
+    //Update 
+   product.availability =  !product.dataValues.availability;
+
+    await product.save();
+
+    return res.json({data : product});
+};
+
+export const deleteProduct = async(req:Request, res:Response)=>{
+    const {id} =  req.params;
+
+    const product = await Product.findByPk(id);
+
+    await product.deletedAt();
+
+    return res.json({data : product});
+};
