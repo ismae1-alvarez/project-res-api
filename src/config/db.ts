@@ -1,5 +1,15 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import dotenv from 'dotenv';
 
-const db = new Sequelize('postgresql://rest_api_rest_node_typescript_user:XBS5ib9hONWl2HwqV1vs84KCdRoCyg2d@dpg-cqrdn888fa8c73d2mveg-a.oregon-postgres.render.com/rest_api_rest_node_typescript?ssl=true');
+dotenv.config();
+
+const db = new Sequelize(process.env.DATABASE_URL, {
+    dialectOptions :{
+        ssl :{
+            require:false
+        }
+    }, 
+    models :[__dirname + '/../models/**/*.ts' ]
+});
 
 export default db;
