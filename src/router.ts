@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { createProduct, deleteProduct, getProduct, getProductById, updateAvailability, updateProduct } from "./handlers/products";
 import { body, param } from "express-validator";
 import { handleInputErrors } from "./middleware";
