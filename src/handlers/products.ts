@@ -66,7 +66,9 @@ export const deleteProduct = async(req:Request, res:Response)=>{
 
     const product = await Product.findByPk(id);
 
-    await product.deletedAt();
+    if(!product) return res.status(404).json({error: 'Produto no encontrado'});
 
-    return res.json({data : product});
+    await product.destroy();
+
+    return res.json({data : "Producto eliinado"});
 };
